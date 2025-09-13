@@ -13,11 +13,15 @@ func Unwrap[T any](some T) (T, bool) {
 }
 
 func FullyUnwrap[T any](some T) T {
-	var ok bool
-	for some, ok = Unwrap[T](some); ok; {
+	for {
+		var ok bool
+		some, ok = Unwrap[T](some)
+		if !ok {
+			return some
+		}
 	}
-	return some
 }
+
 func UnwrapUntilCast[T any, V any](some T) (V, bool) {
 	if val, ok := any(some).(V); ok {
 		return val, true
