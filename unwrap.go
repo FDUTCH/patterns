@@ -26,12 +26,15 @@ func UnwrapUntilCast[T any, V any](some T) (V, bool) {
 	if val, ok := any(some).(V); ok {
 		return val, true
 	}
-	for s, ok := Unwrap[T](some); ok; {
-		if val, ok := any(s).(V); ok {
+	var empty V
+	for {
+		s, ok := Unwrap[T](some)
+		if val, success := any(s).(V); success {
 			return val, true
+		}
+		if !ok {
+			return empty, false
 		}
 		some = s
 	}
-	var val V
-	return val, false
 }
